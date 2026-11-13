@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/MarkEdit-app/extensions/raw/refs/heads/main/schemas/extension.schema.json",
+  "title": "MarkEdit Extension Registry Entry",
+  "description": "One reviewed extension in the MarkEdit extension registry (extensions/<id>.json).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "description",
+    "author",
+    "homepage",
+    "versions"
+  ],
+  "definitions": {
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "url",
+        "sha256"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z-.]+)?(?:\\+[0-9A-Za-z-.]+)?$",
+          "description": "Semantic version, e.g. \"1.2.0\"."
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:00:00Z$",
+          "description": "UTC hour when this version was checked into the registry."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://",
+          "description": "HTTPS URL of the injectable .js, e.g. the built dist/<id>.js committed at a release tag."
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$",
+          "description": "SHA-256 of the file at url (the exact bytes the editor injects)."
+        },
+        "minAppVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z-.]+)?(?:\\+[0-9A-Za-z-.]+)?$",
+          "description": "Minimum MarkEdit version. Defaults to 1.0.0."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "pattern": "\\S",
+          "description": "Short release notes; null or a non-empty string, never blank."
+        }
+      }
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference for editor tooling."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Unique identifier; kebab-case; must equal the filename."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Human-readable name; must not be blank."
+    },
+    "description": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "One-line summary; must not be blank."
+    },
+    "author": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Author name or handle; must not be blank."
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Project homepage; must be an https URL."
+    },
+    "addedDate": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:00:00Z$",
+      "description": "UTC hour when this entry was first checked into the registry."
+    },
+    "featured": {
+      "type": "boolean",
+      "description": "Curated recommendation; featured entries are surfaced first in Discover."
+    },
+    "versions": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Only the newest 5 are kept, the build trims older ones. The newest is resolved as \"latest\".",
+      "items": {
+        "$ref": "#/definitions/version"
+      }
+    }
+  }
+}
